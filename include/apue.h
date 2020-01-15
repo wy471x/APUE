@@ -203,8 +203,7 @@ err_doit(int errnoflag, int error, const char *fmt, va_list ap)
     char    buf[MAXLINE];  
     vsnprintf(buf, MAXLINE, fmt, ap);  
     if (errnoflag)  
-        snprintf(buf+strlen(buf), MAXLINE-strlen(buf), ": %s",strerror(error));  
-    strcat(buf, " ");  
+        snprintf(buf+strlen(buf), MAXLINE-strlen(buf), ": %s\n",strerror(error));  
     fflush(stdout);     /* in case stdout and stderr are the same */  
     fputs(buf, stderr);  
     fflush(NULL);       /* flushes all stdio output streams */  
