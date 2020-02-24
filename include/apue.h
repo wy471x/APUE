@@ -205,6 +205,7 @@ err_doit(int errnoflag, int error, const char *fmt, va_list ap)
     if (errnoflag)  
         snprintf(buf+strlen(buf), MAXLINE-strlen(buf), ": %s\n",strerror(error));  
     fflush(stdout);     /* in case stdout and stderr are the same */  
+    buf[strlen(buf)] = '\n';
     fputs(buf, stderr);  
     fflush(NULL);       /* flushes all stdio output streams */  
 
