@@ -1,12 +1,12 @@
 #include "../../include/apue.h"
-#include <setjmp.h>
-#include <time.h>
 #include <errno.h>
+#include <time.h>
+#include <setjmp.h>
 
 static void sig_usr1(int);
 static void sig_alrm(int);
-static sigjmp_buf jmpbuf;
 void pr_mask(const char *);
+static sigjmp_buf jmpbuf;
 static volatile sig_atomic_t canjump;
 
 int main(void)
