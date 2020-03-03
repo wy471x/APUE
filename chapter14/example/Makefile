@@ -1,19 +1,24 @@
-TARGET:=nonblockw
-OBJS:=error.o nonblockw.o setfl.o clrfl.o
-CC:=gcc
+all : nonblockw deadlock mandatory
+CC=gcc
 LIBS=-pthread
-$(TARGET):$(OBJS)
+nonblockw : nonblockw.o error.o setfl.o clrfl.o
+	$(CC) -o $@ $^ $(LIBS) 
+
+deadlock : deadlock.o error.o lockreg.o tellwait.o
 	$(CC) -o $@ $^ $(LIBS)
 
-errno.o:error.c apue.h
-	$(CC) -c $< -o $@
-nonblockw.o:nonblockw.c apue.h
-	$(CC) -c $< -o $@
-setfl.o:setfl.c apue.h
-	$(CC) -c $< -o $@
-clrfl.o:clrfl.c apue.h
-	$(CC) -c $< -o $@
+mandatory : mandatory.o error.o lockreg.o tellwait.o setfl.o 
+	$(CC) -o $@ $^ $(LIBS)
+
+nonblockw.o : apue.h
+deadlock.o : apue.h
+mandatory.o :apue.h
+error.o	: apue.h
+setfl.o : apue.h
+clrfl.o : apue.h
+tellwait.o : apue.h
+lockreg.o :apue.h
 
 clean:
-	rm -rf $(OBJS)
-	rm -rf $(TARGET)
+	rm -rf nonblockw deadlock mandatory 
+	rm -rf *.o
