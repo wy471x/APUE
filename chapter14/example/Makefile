@@ -1,24 +1,22 @@
-all : nonblockw deadlock mandatory
+all : nonblockw deadlock mandatory rot13a rot13c2
 CC=gcc
 LIBS=-pthread
-nonblockw : nonblockw.o error.o setfl.o clrfl.o
+LRT=-lrt
+nonblockw : nonblockw.c error.c setfl.c clrfl.c
 	$(CC) -o $@ $^ $(LIBS) 
 
-deadlock : deadlock.o error.o lockreg.o tellwait.o
+deadlock : deadlock.c error.c lockreg.c tellwait.c
 	$(CC) -o $@ $^ $(LIBS)
 
-mandatory : mandatory.o error.o lockreg.o tellwait.o setfl.o 
+mandatory : mandatory.c error.c lockreg.c tellwait.c setfl.c 
 	$(CC) -o $@ $^ $(LIBS)
 
-nonblockw.o : apue.h
-deadlock.o : apue.h
-mandatory.o :apue.h
-error.o	: apue.h
-setfl.o : apue.h
-clrfl.o : apue.h
-tellwait.o : apue.h
-lockreg.o :apue.h
+rot13a : rot13a.c error.c 
+	$(CC) -o $@ $^
+
+rot13c2 : rot13c2.c error.c
+	$(CC) -o $@ $^ $(LRT)
 
 clean:
-	rm -rf nonblockw deadlock mandatory 
+	rm -rf nonblockw deadlock mandatory rot13a rot13c2 
 	rm -rf *.o
