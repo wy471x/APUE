@@ -1,4 +1,4 @@
-all : nonblockw deadlock mandatory rot13a rot13c2
+all : nonblockw deadlock mandatory rot13a rot13c2 mcopy2
 CC=gcc
 LIBS=-pthread
 LRT=-lrt
@@ -17,6 +17,9 @@ rot13a : rot13a.c error.c
 rot13c2 : rot13c2.c error.c
 	$(CC) -o $@ $^ $(LRT)
 
+mcopy2 : mcopy2.c error.c
+	$(CC) -o $@ $^
+
 clean:
-	rm -rf nonblockw deadlock mandatory rot13a rot13c2 
+	rm -rf nonblockw deadlock mandatory rot13a rot13c2 mcopy2 
 	rm -rf *.o
