@@ -14,8 +14,8 @@ int main(void)
     MSG my_msg;
     char *pstr;
     memset(&my_msg, 0, sizeof(MSG));
-    mkfifo("SERVER_FIFO", 0777);
-    server_fifo_fd = open("./SERVER_FIFO", O_RDONLY);
+    mkfifo("/tmp/SERVER_FIFO", 0777);
+    server_fifo_fd = open("/tmp/SERVER_FIFO", O_RDWR);
 
     if(server_fifo_fd == -1)
         err_sys("open server fifo error");
@@ -28,7 +28,7 @@ int main(void)
             pstr++;
         }
         memset(client_fifo, 0, 256);
-        sprintf(client_fifo, "CLIENT_FIFO_%d", my_msg.client_pid);
+        sprintf(client_fifo, "/tmp/CLIENT_FIFO_%d", my_msg.client_pid);
         client_fifo_fd = open(client_fifo, O_WRONLY);
         if(client_fifo_fd == -1)
             err_sys("open client fifo error");
@@ -37,6 +37,7 @@ int main(void)
         printf("OVER!\n");
         close(client_fifo_fd);
     }
-    unlink("SERVER_FIFO");
+    printf("iret = %d\n", iret);
+    unlink("/tmp/SERVER_FIFO");
 }
 

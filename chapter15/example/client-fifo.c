@@ -9,14 +9,14 @@ int main(void)
 {
     int server_fifo_fd, client_fifo_fd;
     char client_fifo[256] = {0};
-    sprintf(client_fifo, "CLIENT_FIFO_%d", getpid());
+    sprintf(client_fifo, "/tmp/CLIENT_FIFO_%d", getpid());
     MSG my_msg;
     memset(&my_msg, 0, sizeof(MSG));
     my_msg.client_pid = getpid();
-    server_fifo_fd = open("./SERVER_FIFO", O_WRONLY);
+    server_fifo_fd = open("/tmp/SERVER_FIFO", O_WRONLY);
     mkfifo(client_fifo, 0777);
 
-    //while(1){
+    while(1){
         int n = read(STDIN_FILENO, my_msg.my_data, 512);
         my_msg.my_data[n] = '\0';
         write(server_fifo_fd, &my_msg, sizeof(MSG));
@@ -25,7 +25,7 @@ int main(void)
         my_msg.my_data[n] = 0;
         write(STDOUT_FILENO, my_msg.my_data, strlen(my_msg.my_data));
         close(client_fifo_fd);
-    //}
-    unlink(client_fifo);
+    }
+    //unlink(client_fifo);
 }
 

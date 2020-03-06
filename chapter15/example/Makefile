@@ -1,4 +1,4 @@
-all : pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server client
+all : pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server-fifo client-fifo server-mesq client-mesq server-mesq2 client-mesq2
 
 CC=gcc
 pipe1 : pipe1.c error.c
@@ -23,11 +23,19 @@ write : write.c error.c
 	$(CC) -o $@ $^
 read : read.c error.c
 	$(CC) -o $@ $^
-server : server.c error.c
+server-fifo : server-fifo.c error.c
 	$(CC) -o $@ $^
-client : client.c error.c
+client-fifo : client-fifo.c error.c
+	$(CC) -o $@ $^
+server-mesq : server-mesq.c error.c
+	$(CC) -o $@ $^
+client-mesq : client-mesq.c error.c
+	$(CC) -o $@ $^
+server-mesq2 : server-mesq2.c error.c
+	$(CC) -o $@ $^
+client-mesq2 : client-mesq2.c error.c
 	$(CC) -o $@ $^
 
 clean :
 	rm -rf *.o
-	rm -rf pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server client
+	rm -rf pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server-fifo client-fifo server-mesq client-mesq server-mesq2 client-mesq2
