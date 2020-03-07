@@ -7,15 +7,32 @@
 #include <fcntl.h>
 #define PATH "/tmp/msgq"
 #define BUFFER 255
-struct mdata{
-    char buffer[BUFFER+1];
-    long msgqid;
-};
 
 struct mymsg{
     long mtype;
-    struct mdata mtext;
+    char buffer[BUFFER+1];
 };
+
+void child_make(int msgqid)
+{
+    int pid;
+    struct mymsg msg;
+    memset(&msg, 0, sizeof(msg));
+    if((pid = fork()) == 0){
+        while(1)
+        {
+            msgrcv(msgqid, &msg, sizeof(msg.buffer), 1, 0);
+            fprintf(stdout, "server receive message from client:\n   %s\n", 
+                    msg.buffer);
+            msg.mtype = 2;
+            int len = strlen(msg.buffer);
+            int i;
+            for(i = 0; i < len; i++)
+                msg.buffer[i] = toupper(msg.buffer[i]);
+            msgsnd(msgqid, &msg, sizeof(msg.buffer), 0);
+        }
+    }
+}
 
 int main(void)
 {
@@ -26,29 +43,27 @@ int main(void)
         err_sys("open error");
     write(fd, &key, sizeof(key));
 
-    int msgid = msgget(key, 0666|IPC_CREAT);
-    if(msgid == -1)
+    int commonMsgqId = msgget(key, 0666|IPC_CREAT);
+    if(commonMsgqId == -1)
     {
         fprintf(stderr, "Create Message Error: %s\a\n", strerror(errno));
         exit(1);
     }
 
     struct mymsg msg;
-    int commonmsgid = msgid;
     memset(&msg, 0, sizeof(struct mymsg));
-    while(msgrcv(msgid, &msg, sizeof(msg.mtext), 1, 0) > 0){
-        if(msg.mtext.msgqid == commonmsgid)
-    
-        fprintf(stdout, "server receive message from clientmsgid_%ld:\n   %s\n",
-                msg.mtext.msgqid, msg.mtext.buffer);
-        fflush(stdout);
-        int len = strlen(msg.mtext.buffer);
-        int i;
-        for(i = 0; i < len ; i++)
-            msg.mtext.buffer[i] = toupper(msg.mtext.buffer[i]);
+    msg.mtype = 2;
+    while(1)
+    {
+        /* main process listen to common message queue  */
+        msgrcv(commonMsgqId, &msg, sizeof(msg.buffer), 1, 0);
+        int msgqId = atoi(msg.buffer);
         msg.mtype = 2;
-        msgid = msg.mtext.msgqid;
-        msgsnd(msgid, &msg, sizeof(msg.mtext.buffer), 0);
+        strcpy(msg.buffer, "connect to server...\n");
+        msgsnd(msgqId, &msg, sizeof(msg.buffer), 0);
+        /* child process handle request from client  */
+        child_make(msgqId);
     }
+    msgctl(commonMsgqId, IPC_RMID, NULL);
     exit(0);
 }
