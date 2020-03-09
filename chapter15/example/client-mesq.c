@@ -14,7 +14,7 @@ struct mymsg{
 
 int main(void)
 {
-    int msgid = msgget((key_t)1234, 0666|IPC_CREAT);
+    int msgid = msgget((key_t)1234, 0666);
     if(msgid == -1){
         fprintf(stderr, "Create Message Error: %s\a\n", strerror(errno));
         exit(1);
