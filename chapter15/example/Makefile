@@ -1,6 +1,6 @@
-all : pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server-fifo client-fifo server-mesq client-mesq server-mesq2 client-mesq2 server-shm-sem client-shm-sem
-
+EXE=pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server-fifo client-fifo server-mesq client-mesq server-mesq2 client-mesq2 server-shm-sem client-shm-sem
 CC=gcc
+all : $(EXE)
 pipe1 : pipe1.c error.c
 	$(CC) -o $@ $^
 pipe1-test : pipe1-test.c error.c
@@ -42,4 +42,4 @@ client-shm-sem : client-shm-sem.c error.c
 
 clean :
 	rm -rf *.o
-	rm -rf pipe1 pipe1-test pipe2 popen2 popen1 myuclc add2 pipe4 add2stdio write read server-fifo client-fifo server-mesq client-mesq server-mesq2 client-mesq2 server-shm-sem client-shm-sem
+	rm -rf $(EXE)
